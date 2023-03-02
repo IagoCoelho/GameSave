@@ -19,7 +19,7 @@ Uma API para os sistema de progresso de jogo.
     - Apagar
     - Alterar
 - Progresso
-    - Listar
+    - [Listar](#progresso)
 
 ---
 
