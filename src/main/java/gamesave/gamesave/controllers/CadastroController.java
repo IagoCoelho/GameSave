@@ -1,5 +1,7 @@
 package gamesave.gamesave.controllers;
 
+import java.time.LocalDate;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,14 +14,15 @@ public class CadastroController {
     
     @GetMapping("/api/cadastro")
     public Cadastro jogo() {
-        var jogo = new Cadastro(
-            nomeJogo: "r6",
-            categoria: "fps",
-            plataforma: "ps4",
-            descricao: "jogo de tiro"
+        var teste = new Cadastro(
+            nomeJogo: "hogwarts legacy",
+            categoria: "ação",
+            plataforma: "ps5",
+            descricao: "RPG de ação",
+            LocalDate.now()
             );
 
-        return jogo;
+        return teste;
     }
     
 }
