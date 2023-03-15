@@ -1,10 +1,10 @@
 package gamesave.gamesave.models;
 
-public class Registrados {
+public class Jogos {
     Cadastro cadastro;
     Metas metas;
 
-    public Registrados(Cadastro cadastro, Metas metas){
+    public Jogos(Cadastro cadastro, Metas metas){
         this.cadastro = cadastro;
         this.metas = metas;
     }

@@ -1,6 +1,7 @@
 package gamesave.gamesave.models;
 
 public class Cadastro {
+    private Long id;
     private String nomeJogo;
     private String categoria;
     private String plataforma;
@@ -11,6 +12,14 @@ public class Cadastro {
         this.categoria = categoria;
         this.plataforma = plataforma;
         this.descricao = descricao;
+    }
+
+    public Long getId(){
+        return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
     }
 
     public String getNomeJogo(){

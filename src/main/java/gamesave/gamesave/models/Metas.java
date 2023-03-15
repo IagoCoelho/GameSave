@@ -5,11 +5,20 @@ public class Metas {
     private LocalDate inicio;
     private LocalDate fim;   
     private LocalDate horasDia;
+    private Long id;
 
     public Metas(LocalDate inicio, LocalDate fim, LocalDate horasDia){
         this.inicio = inicio;
         this.fim = fim;
         this.horasDia = horasDia;
+    }
+
+    public Long getId(){
+        return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
     }
 
     public LocalDate getInicio(){
