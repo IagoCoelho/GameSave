@@ -2,8 +2,8 @@ package gamesave.gamesave.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,57 +11,79 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import gamesave.gamesave.models.Cadastro;
+import gamesave.gamesave.repository.CadastroRepository;
 
 
 @RestController
+@RequestMapping("/api/cadastro")
 public class CadastroController {
     Logger log = LoggerFactory.getLogger(CadastroController.class);
 
     List<Cadastro> cadastro = new ArrayList<>();
 
-    @GetMapping("/api/cadastro")
+    @Autowired
+    CadastroRepository repository;
+
+    @GetMapping
     public List<Cadastro> index(){
-        return cadastro;
+        return repository.findAll();
     }
 
-    @PostMapping("/api/cadastro")
+    @PostMapping
     public ResponseEntity<Cadastro> create(@RequestBody Cadastro cadastro){
         log.info("cadastrando jogo: " + cadastro);
-        cadastro.setId(cadastro.size() + 1l);
-        cadastro.add(cadastro);
+        
+        repository.save(cadastro);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(cadastro);
     }
 
-    @GetMapping("/api/cadastro/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Cadastro> jogo(@PathVariable Long id){
         log.info("buscando jogo com id " + id);
-        var cadastroEncontrado = cadastro.stream().filter(c -> c.getId().equals(id)).findFirst();
+        var cadastroEncontrado = repository.findById(id);
 
         if(cadastroEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(cadastroEncontrado.get());
+
     }
 
-    @DeleteMapping("/api/cadastro/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Cadastro> destroy(@PathVariable Long id){
         log.info("apagando cadastro com id " + id);
-        var cadastroEncontrado = cadastro.stream().filter(c -> c.getId().equals(id)).findFirst();
+        var cadastroEncontrado = repository.findById(id);
 
         if(cadastroEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
 
-        cadastro.remove(cadastroEncontrado.get());
+        repository.delete(cadastroEncontrado.get());
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Cadastro> update(@PathVariable Long id, @RequestBody Cadastro cadastro){
+        log.info("alterando cadastro com id" + id);
+        var cadastroEncontrado = repository.findById(id);
+
+        if(cadastroEncontrado.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        cadastro.setId(id);
+
+        repository.save(cadastro);
+
+        return ResponseEntity.ok(cadastro);
     }
     
 }

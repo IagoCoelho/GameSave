@@ -1,7 +1,15 @@
 package gamesave.gamesave.models;
 import java.time.LocalDate;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Metas {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private LocalDate inicio;
     private LocalDate fim;   
     private LocalDate horasDia;
