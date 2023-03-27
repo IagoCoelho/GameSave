@@ -15,6 +15,8 @@ public class Cadastro {
     private String plataforma;
     private String descricao;
 
+    protected Cadastro(){}
+
     public Cadastro(String nomeJogo, String categoria, String plataforma, String descricao){
         this.nomeJogo = nomeJogo;
         this.categoria = categoria;
