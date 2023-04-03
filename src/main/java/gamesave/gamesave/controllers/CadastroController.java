@@ -13,13 +13,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.cert.CertPathValidatorException.Reason;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import gamesave.gamesave.exception.RestNotFoundException;
 import gamesave.gamesave.models.Cadastro;
 import gamesave.gamesave.repository.CadastroRepository;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -38,35 +42,28 @@ public class CadastroController {
     }
 
     @PostMapping
-    public ResponseEntity<Cadastro> create(@RequestBody Cadastro cadastro){
+    public ResponseEntity<Cadastro> create(@RequestBody @Valid Cadastro cadastro){
         log.info("cadastrando jogo: " + cadastro);
-        
         repository.save(cadastro);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(cadastro);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Cadastro> jogo(@PathVariable Long id){
         log.info("buscando jogo com id " + id);
-        var cadastroEncontrado = repository.findById(id);
-
-        if(cadastroEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(cadastroEncontrado.get());
+        var cadastro = repository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Cadastro não encontrada"));
+        return ResponseEntity.ok(cadastro);
 
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Cadastro> destroy(@PathVariable Long id){
         log.info("apagando cadastro com id " + id);
-        var cadastroEncontrado = repository.findById(id);
+        var cadastro = repository.findById(id)
+            .orElseThrow(() -> new RestNotFoundException("despesa não encontrada"));
 
-        if(cadastroEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        repository.delete(cadastroEncontrado.get());
+        repository.delete(cadastro);
 
         return ResponseEntity.noContent().build();
     }
@@ -74,13 +71,10 @@ public class CadastroController {
     @PutMapping("{id}")
     public ResponseEntity<Cadastro> update(@PathVariable Long id, @RequestBody Cadastro cadastro){
         log.info("alterando cadastro com id" + id);
-        var cadastroEncontrado = repository.findById(id);
-
-        if(cadastroEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        repository.findById(id)
+            .orElseThrow(() -> new RestNotFoundException("despesa não encontrada"));;
 
         cadastro.setId(id);
-
         repository.save(cadastro);
 
         return ResponseEntity.ok(cadastro);

@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import gamesave.gamesave.exception.RestNotFoundException;
 import gamesave.gamesave.models.Metas;
 import gamesave.gamesave.repository.MetasRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/metas")
@@ -38,7 +41,7 @@ public class MetasController {
     }
 
     @PostMapping
-    public ResponseEntity<Metas> create(@RequestBody Metas Metas){
+    public ResponseEntity<Metas> create(@RequestBody @Valid Metas Metas){
         log.info("cadastrando meta: " + Metas);
         
         repository.save(Metas);
@@ -49,23 +52,19 @@ public class MetasController {
     @GetMapping("{id}")
     public ResponseEntity<Metas> jogo(@PathVariable Long id){
         log.info("buscando meta com id " + id);
-        var MetasEncontrado = repository.findById(id);
+        var metas = repository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Meta não encontrada"));;
 
-        if(MetasEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(MetasEncontrado.get());
+        return ResponseEntity.ok(metas);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Metas> destroy(@PathVariable Long id){
         log.info("apagando metas com id " + id);
-        var MetasEncontrado = repository.findById(id);
+        var metas = repository.findById(id)
+            .orElseThrow(() -> new RestNotFoundException("meta não encontrada"));;
 
-        if(MetasEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        repository.delete(MetasEncontrado.get());
+        repository.delete(metas);
 
         return ResponseEntity.noContent().build();
     }
@@ -73,13 +72,10 @@ public class MetasController {
     @PutMapping("{id}")
     public ResponseEntity<Metas> update(@PathVariable long id, @RequestBody Metas metas){
         log.info("alterando meta com id " + id);
-        var MetasEncontrado = repository.findById(id);
-
-        if(MetasEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        repository.findById(id)
+            .orElseThrow(() -> new RestNotFoundException("meta não encontrada"));
 
         metas.setId(id);
-
         repository.save(metas);
 
         return ResponseEntity.ok(metas);
