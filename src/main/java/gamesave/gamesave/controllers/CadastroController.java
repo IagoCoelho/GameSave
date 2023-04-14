@@ -15,26 +15,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.cert.CertPathValidatorException.Reason;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import gamesave.gamesave.exception.RestNotFoundException;
 import gamesave.gamesave.models.Cadastro;
 import gamesave.gamesave.repository.CadastroRepository;
+import gamesave.gamesave.repository.JogosRepository;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/api/cadastro")
 public class CadastroController {
-    Logger log = LoggerFactory.getLogger(CadastroController.class);
 
     List<Cadastro> cadastro = new ArrayList<>();
 
     @Autowired
-    CadastroRepository repository;
+    CadastroRepository cadastroRepository;
+
+    @Autowired
+    JogosRepository jogosRepository;
 
     @GetMapping
     public List<Cadastro> index(){
@@ -72,7 +75,7 @@ public class CadastroController {
     public ResponseEntity<Cadastro> update(@PathVariable Long id, @RequestBody Cadastro cadastro){
         log.info("alterando cadastro com id" + id);
         repository.findById(id)
-            .orElseThrow(() -> new RestNotFoundException("despesa não encontrada"));;
+            .orElseThrow(() -> new RestNotFoundException("cadastro não encontrada"));;
 
         cadastro.setId(id);
         repository.save(cadastro);

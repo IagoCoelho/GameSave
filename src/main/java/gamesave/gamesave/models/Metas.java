@@ -11,13 +11,16 @@ import jakarta.validation.constraints.NotNull;
 public class Metas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotNull
     private LocalDate inicio;
-    @NotNull
-    private LocalDate fim;
+
     @NotNull   
     private LocalDate horasDia;
-    private Long id;
+    
+    @NotNull
+    private LocalDate fim;
 
     protected Metas(){}
 
