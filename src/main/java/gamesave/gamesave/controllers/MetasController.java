@@ -68,16 +68,17 @@ public class MetasController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}") // atualize a anotação aqui para incluir o path completo do recurso
     public ResponseEntity<Metas> update(@PathVariable long id, @RequestBody Metas metas){
         log.info("alterando meta com id " + id);
         repository.findById(id)
             .orElseThrow(() -> new RestNotFoundException("meta não encontrada"));
-
+    
         metas.setId(id);
         repository.save(metas);
-
+    
         return ResponseEntity.ok(metas);
     }
+    
     
 }

@@ -41,20 +41,20 @@ public class CadastroController {
 
     @GetMapping
     public List<Cadastro> index(){
-        return repository.findAll();
+        return cadastroRepository.findAll();
     }
 
     @PostMapping
     public ResponseEntity<Cadastro> create(@RequestBody @Valid Cadastro cadastro){
         log.info("cadastrando jogo: " + cadastro);
-        repository.save(cadastro);
+        cadastroRepository.save(cadastro);
         return ResponseEntity.status(HttpStatus.CREATED).body(cadastro);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Cadastro> jogo(@PathVariable Long id){
         log.info("buscando jogo com id " + id);
-        var cadastro = repository.findById(id)
+        var cadastro = cadastroRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Cadastro não encontrada"));
         return ResponseEntity.ok(cadastro);
 
@@ -63,10 +63,10 @@ public class CadastroController {
     @DeleteMapping("{id}")
     public ResponseEntity<Cadastro> destroy(@PathVariable Long id){
         log.info("apagando cadastro com id " + id);
-        var cadastro = repository.findById(id)
+        var cadastro = cadastroRepository.findById(id)
             .orElseThrow(() -> new RestNotFoundException("despesa não encontrada"));
 
-        repository.delete(cadastro);
+            cadastroRepository.delete(cadastro);
 
         return ResponseEntity.noContent().build();
     }
@@ -74,11 +74,11 @@ public class CadastroController {
     @PutMapping("{id}")
     public ResponseEntity<Cadastro> update(@PathVariable Long id, @RequestBody Cadastro cadastro){
         log.info("alterando cadastro com id" + id);
-        repository.findById(id)
+        cadastroRepository.findById(id)
             .orElseThrow(() -> new RestNotFoundException("cadastro não encontrada"));;
 
         cadastro.setId(id);
-        repository.save(cadastro);
+        cadastroRepository.save(cadastro);
 
         return ResponseEntity.ok(cadastro);
     }
