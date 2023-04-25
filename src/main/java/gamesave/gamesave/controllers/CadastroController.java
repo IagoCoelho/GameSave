@@ -44,10 +44,13 @@ public class CadastroController {
     JogosRepository jogosRepository;
 
     @GetMapping
-public Page<Cadastro> index(@RequestParam(required = false) String descricao, @PageableDefault(size = 5) Pageable pageable){
-    if(descricao == null) return cadastroRepository.findAll(pageable).getContent();
-    return cadastroRepository.findByDescricaoContaining(descricao, pageable);
-}
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String busca, @PageableDefault(size = 5) Pageable pageable){
+        Page<Cadastro> cadastro = (busca == null)?
+            cadastroRepository.findAll(pageable):
+            cadastroRepository.findByDescricaoContaining(busca, pageable);
+
+        return assembler.toModel(cadastro.map(Cadastro::toModel));
+    }
 
     @PostMapping
     public ResponseEntity<Cadastro> create(@RequestBody @Valid Cadastro cadastro){
